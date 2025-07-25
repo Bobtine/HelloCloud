@@ -1,0 +1,35 @@
+﻿@model IEnumerable<HelloCloud.Models.Category>
+@{
+    ViewData["Title"] = "Category";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+    @foreach (var categorie in Model)
+    {
+        <table style="width:80%; border-collapse:collapse; margin-bottom:30px;">
+            <caption style="font-weight:bold; background:#f0f0f0; padding:10px;">
+                Catégorie : @categorie.NomCategorie
+            </caption>
+            <thead>
+                <tr style="background:#ddd;">
+                    <th style="padding:8px; border:1px solid #ccc;">Nom du produit</th>
+                    <th style="padding:8px; border:1px solid #ccc;">Prix (€)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var produit in categorie.Produits)
+                {
+                    <tr>
+                        <td style="padding:8px; border:1px solid #ccc;">@produit.NomProduit</td>
+                        <td style="padding:8px; border:1px solid #ccc;">@produit.Prix.ToString("F2")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+
+</div>
