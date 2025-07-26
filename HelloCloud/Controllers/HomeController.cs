@@ -28,14 +28,14 @@ namespace HelloCloud.Controllers
                 categories = _context.Categories
                         .Include(c => c.Produits)
                             .ToListAsync().Result;
-                Console.WriteLine("Connexion réussie !");
-                _logger.LogDebug("Connexion réussie Log!");
+                Console.WriteLine("Connexion réussie robertTine !");
+                _logger.LogDebug("Connexion réussie Log robertTine!");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Erreur : {ex.Message}");
+                Console.WriteLine($"Erreur robertTine : {ex.Message}");
 
-                _logger.LogCritical($"Erreur Log : {ex.Message} ");
+                _logger.LogCritical($"Erreur Log robertTine : {ex.Message} ");
             }
 
             return View(categories);
