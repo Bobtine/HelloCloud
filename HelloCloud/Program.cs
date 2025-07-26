@@ -1,7 +1,7 @@
 using HelloCloud.Models;
 using Microsoft.EntityFrameworkCore;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args); 
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 // Injection du DbContext
