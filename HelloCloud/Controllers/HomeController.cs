@@ -55,8 +55,27 @@ namespace HelloCloud.Controllers
         [Route("debug/config")]
         public IActionResult ConfigDebug([FromServices] IConfiguration config, [FromServices] IWebHostEnvironment env)
         {
+
+            IList<Category> categories = new List<Category>();
+            var message = "Debug Config";
+            try
+            {
+                categories = _context.Categories
+                        .Include(c => c.Produits)
+                            .ToListAsync().Result;
+                message += categories.Count > 0 ? $" - {categories.Count} catégories trouvées." : " - Aucune catégorie trouvée.";
+                Console.WriteLine("Connexion réussie robertTine !");
+                _logger.LogDebug("Connexion réussie Log robertTine!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur robertTine : {ex.Message}");
+
+                _logger.LogCritical($"Erreur Log robertTine : {ex.Message} ");
+                message += ex.Message;
+            }
             var conn = config.GetConnectionString("DefaultConnection");
-            return Content($"ENV: {env.EnvironmentName} \nConnection: {conn}");
+            return Content($"ENV: {env.EnvironmentName} \nConnection: {conn}  \nMessage: {message} ");
         }
     }
 }
