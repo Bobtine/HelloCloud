@@ -1,8 +1,6 @@
 ﻿using HelloCloud.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
 namespace HelloCloud.Controllers
@@ -25,6 +23,7 @@ namespace HelloCloud.Controllers
 
             try
             {
+                _logger.LogInformation("Debut Index !");
                 categories = _context.Categories
                         .Include(c => c.Produits)
                             .ToListAsync().Result;
@@ -60,6 +59,7 @@ namespace HelloCloud.Controllers
             var message = "Debug Config";
             try
             {
+                _logger.LogInformation("Debut Index !");
                 categories = _context.Categories
                         .Include(c => c.Produits)
                             .ToListAsync().Result;

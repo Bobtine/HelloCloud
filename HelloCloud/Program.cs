@@ -1,9 +1,11 @@
 using HelloCloud.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging.AzureAppServices;
+using Microsoft.Extensions.Logging.ApplicationInsights;
 
 
+var builder = WebApplication.CreateBuilder(args);
 
-var builder = WebApplication.CreateBuilder(args); 
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 // Injection du DbContext
@@ -13,8 +15,19 @@ builder.Services.AddDbContext<TestProduitsContext>(options =>
 builder.Services.AddControllersWithViews();
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
+builder.Logging.AddAzureWebAppDiagnostics();
 builder.Logging.SetMinimumLevel(LogLevel.Debug);
+builder.Services.Configure<AzureFileLoggerOptions>(options =>
+{
+    options.FileName = "azurewebapp-";
+    options.FileSizeLimit = 10 * 1024 * 1024; // 10 MB
+    options.RetainedFileCountLimit = 5;
+});
 
+builder.Services.Configure<AzureBlobLoggerOptions>(options =>
+{
+    options.BlobName = "logAppService.txt";
+});
 var app = builder.Build();
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
 logger.LogDebug("=== Test Log Debug : application démarre ===");
