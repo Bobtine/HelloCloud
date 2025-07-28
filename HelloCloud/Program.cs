@@ -1,6 +1,8 @@
 using HelloCloud.Models;
 using Microsoft.EntityFrameworkCore;
 
+
+
 var builder = WebApplication.CreateBuilder(args); 
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -14,6 +16,9 @@ builder.Logging.AddConsole();
 builder.Logging.SetMinimumLevel(LogLevel.Debug);
 
 var app = builder.Build();
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+logger.LogDebug("=== Test Log Debug : application démarre ===");
+Console.WriteLine("=== Test Console.WriteLine : application démarre ===");
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
