@@ -51,5 +51,12 @@ namespace HelloCloud.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        [Route("debug/config")]
+        public IActionResult ConfigDebug([FromServices] IConfiguration config, [FromServices] IWebHostEnvironment env)
+        {
+            var conn = config.GetConnectionString("DefaultConnection");
+            return Content($"ENV: {env.EnvironmentName} \nConnection: {conn}");
+        }
     }
 }
