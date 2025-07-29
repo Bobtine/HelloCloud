@@ -2,6 +2,8 @@ using HelloCloud.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.AzureAppServices;
 using Microsoft.Extensions.Logging.ApplicationInsights;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.Identity.Web;
 
 
 var builder = WebApplication.CreateBuilder(args);
