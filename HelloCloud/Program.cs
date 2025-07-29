@@ -25,8 +25,19 @@ builder.Services.Configure<AzureFileLoggerOptions>(options =>
     options.FileSizeLimit = 10 * 1024 * 1024; // 10 MB
     options.RetainedFileCountLimit = 5;
 });
+
+builder.Services.Configure<AzureBlobLoggerOptions>(options =>
+{
+    options.BlobName = "logAppService.txt";
+});
+builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+    .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
 builder.Services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options =>
 {
+    options.ResponseType = "code"; // Forcer Authorization Code flow
+    options.UsePkce = true;        // Activer PKCE (sécurisé)
+
+    // Tu peux aussi ici conserver ton Event de logging
     options.Events ??= new OpenIdConnectEvents();
     options.Events.OnRedirectToIdentityProvider = context =>
     {
@@ -36,13 +47,6 @@ builder.Services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.Authentic
     };
 });
 
-builder.Services.Configure<AzureBlobLoggerOptions>(options =>
-{
-    options.BlobName = "logAppService.txt";
-});
-
-builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
-    .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
 
 builder.Services.AddAuthorization(options =>
 {
