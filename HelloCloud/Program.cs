@@ -31,12 +31,15 @@ builder.Services.Configure<AzureBlobLoggerOptions>(options =>
     options.BlobName = "logAppService.txt";
 });
 builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
-    .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
+    .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"))
+    .EnableTokenAcquisitionToCallDownstreamApi()
+    .AddInMemoryTokenCaches(); // facultatif mais recommandé
+
 builder.Services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options =>
 {
     options.ResponseType = "code"; // Forcer Authorization Code flow
     options.UsePkce = true;        // Activer PKCE (sécurisé)
-
+    options.SaveTokens = true;
     // Tu peux aussi ici conserver ton Event de logging
     options.Events ??= new OpenIdConnectEvents();
     options.Events.OnRedirectToIdentityProvider = context =>
