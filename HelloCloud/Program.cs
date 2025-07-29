@@ -25,6 +25,16 @@ builder.Services.Configure<AzureFileLoggerOptions>(options =>
     options.FileSizeLimit = 10 * 1024 * 1024; // 10 MB
     options.RetainedFileCountLimit = 5;
 });
+builder.Services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options =>
+{
+    options.Events ??= new OpenIdConnectEvents();
+    options.Events.OnRedirectToIdentityProvider = context =>
+    {
+        var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
+        logger.LogInformation("Redirecting to Identity Provider with parameters: " + context.ProtocolMessage.Parameters);
+        return Task.CompletedTask;
+    };
+});
 
 builder.Services.Configure<AzureBlobLoggerOptions>(options =>
 {
