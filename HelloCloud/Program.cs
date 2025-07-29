@@ -28,7 +28,18 @@ builder.Services.Configure<AzureBlobLoggerOptions>(options =>
 {
     options.BlobName = "logAppService.txt";
 });
+
+builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+    .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("App.Admin"));
+    options.AddPolicy("ReadOnly", policy => policy.RequireRole("App.Reader"));
+});
+
 var app = builder.Build();
+
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
 logger.LogDebug("=== Test Log Debug : application démarre ===");
 Console.WriteLine("=== Test Console.WriteLine : application démarre ===");
@@ -39,7 +50,6 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

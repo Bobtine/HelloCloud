@@ -1,4 +1,5 @@
 ﻿using HelloCloud.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
@@ -51,6 +52,7 @@ namespace HelloCloud.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        [Authorize(Policy = "AdminOnly")]
         [Route("debug/config")]
         public IActionResult ConfigDebug([FromServices] IConfiguration config, [FromServices] IWebHostEnvironment env)
         {
