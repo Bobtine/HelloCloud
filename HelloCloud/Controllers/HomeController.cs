@@ -79,5 +79,14 @@ namespace HelloCloud.Controllers
             var conn = config.GetConnectionString("DefaultConnection");
             return Content($"ENV: {env.EnvironmentName} \nConnection: {conn}  \nMessage: {message} ");
         }
+
+        [Authorize]
+        [HttpGet("debug/roles")]
+        public IActionResult GetRoles()
+        {
+            var claims = User.Claims.Select(c => $"{c.Type} : {c.Value}");
+            return Content(string.Join("\n", claims));
+        }
+
     }
 }

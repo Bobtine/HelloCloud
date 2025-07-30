@@ -40,22 +40,37 @@ builder.Services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.Authentic
     options.ResponseType = "code"; // Forcer Authorization Code flow
     options.UsePkce = true;        // Activer PKCE (sécurisé)
     options.SaveTokens = true;
-    // Tu peux aussi ici conserver ton Event de logging
+
+    options.TokenValidationParameters.RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/groups";
+
     options.Events ??= new OpenIdConnectEvents();
+
     options.Events.OnRedirectToIdentityProvider = context =>
     {
         var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
         logger.LogInformation("Redirecting to Identity Provider with parameters: " + context.ProtocolMessage.Parameters);
         return Task.CompletedTask;
     };
-});
 
+    options.Events.OnTokenValidated = context =>
+    {
+        var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
+        logger.LogInformation("Token validated. Claims:");
+        var claims = context.Principal?.Claims;
+        foreach (var claim in claims!)
+        {
+            logger.LogInformation($"{claim.Type}: {claim.Value}");
+        }
+        return Task.CompletedTask;
+    };
+});
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("AdminOnly", policy => policy.RequireRole("App.Admin"));
-    options.AddPolicy("ReadOnly", policy => policy.RequireRole("App.Reader"));
+    options.AddPolicy("AdminOnly", policy =>
+         policy.RequireClaim("groups", "a15f4898-56f0-448b-8ce0-6b178c90f9aa"));
 });
+
 
 var app = builder.Build();
 
